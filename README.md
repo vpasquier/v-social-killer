@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/v-social-killer/Lobby](https://badges.gitter.im/v-social-killer/Lobby.svg)](https://gitter.im/v-social-killer/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-`Social Killer` is just a tool to kill after a timeout the current tab displaying one of those sites:
+`Social Killer` is just a chrome extension to kill after a timeout the current tab displaying one of those sites:
 
 - Facebook
 - Instagram
