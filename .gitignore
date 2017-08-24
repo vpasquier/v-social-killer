@@ -1,3 +1,4 @@
+.idea
 *~
 package-lock.json
 *_
@@ -13,7 +14,6 @@ chromedriver.log
 dependency-tree.log
 .DS_Store
 *.gpd.*
-.idea
 *.iml
 *.ipr
 *.iws
