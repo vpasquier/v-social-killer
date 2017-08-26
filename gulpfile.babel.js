@@ -1,15 +1,11 @@
-// generated on 2016-03-11 using generator-chrome-extension 0.5.4
-import gulp from 'gulp';
-import gulpLoadPlugins from 'gulp-load-plugins';
-import del from 'del';
-import runSequence from 'run-sequence';
-import {stream as wiredep} from 'wiredep';
-import es from 'event-stream';
-import path from 'path';
-import util from 'gulp-util';
-import moment from 'moment';
-import vulcanize from 'gulp-vulcanize';
-import crisper from 'gulp-crisper';
+const gulp = require('gulp');
+const gulpLoadPlugins = require('gulp-load-plugins');
+const del =  require('del');
+const runSequence = require('run-sequence');
+const es = require('event-stream');
+const path = require('path');
+const util = require('gulp-util');
+const moment = require('moment');
 
 const $ = gulpLoadPlugins();
 
