@@ -19,6 +19,9 @@
  * @since 1.0
  */
 
+const FACEBOOK = 'facebook';
+const COMPLETE = 'complete';
+
 /* Navigation and Popup management */
 var tabUrl;
 
@@ -59,3 +62,9 @@ function notification(idP, titleP, messageP, img) {
         }
     });
 }
+
+chrome.tabs.onUpdated.addListener(function (tabid, info, tab) {
+    if (tab.url.indexOf(FACEBOOK) !== -1 && info.status === COMPLETE) {
+        chrome.tabs.remove(tab.id, function () {});
+    }
+});
