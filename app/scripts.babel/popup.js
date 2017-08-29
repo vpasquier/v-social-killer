@@ -21,11 +21,11 @@
 
 'use strict';
 
-/* Gmail Accounts management */
+/* Social URL to kill */
 
-var PREFIX_GMAIL_URL = 'https://mail.google.com/mail/u/';
-var COMPLETE = 'complete';
-var PARSER_SCRIPT = 'scripts/scanAccounts.js';
+const FACEBOOK = 'facebook';
+const TWITTER = 'twitter';
+const INSTAGRAM = 'instagram';
 
 var accounts;
 var isTheSameCall;

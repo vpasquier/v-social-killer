@@ -1,9 +1,5 @@
-'use strict';
-
 function escapeHTML(str) {
-  return str.replace(/[&"'<>]/g, function (m) {
-    return escapeHTML.replacements[m];
-  });
+  return str.replace(/[&"'<>]/g, m => escapeHTML.replacements[m]);
 }
 escapeHTML.replacements = { '&': '&amp;', '"': '&quot;', '\'': '&#39;', '<': '&lt;', '>': '&gt;' };
 
@@ -12,7 +8,7 @@ $.ajax({
   url: 'manifest.json',
   dataType: 'json',
   mimeType: 'application/json',
-  success: function success(data) {
+  success: function (data) {
     var version = escapeHTML(data.version);
     $('#version').html(version);
   }

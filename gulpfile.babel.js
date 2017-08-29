@@ -157,7 +157,7 @@ gulp.task('release:firefox', ['build:firefox'], (cb) => {
 gulp.task('babel', () => {
   return gulp.src('app/scripts.babel/**/*.js')
       .pipe($.babel({
-        presets: ['es2015']
+        presets: ['es2017']
       }))
       .pipe(gulp.dest('app/scripts'));
 });
