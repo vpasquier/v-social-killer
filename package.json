@@ -7,7 +7,7 @@
   "devDependencies": {
     "babel-core": "^6.5.2",
     "babel-eslint": "^6.1.2",
-    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2016": "^6.24.1",
     "babel-register": "^6.14.0",
     "del": "^2.2.0",
     "event-stream": "^3.3.4",
@@ -51,9 +51,5 @@
         "single"
       ]
     }
-  },
-  "dependencies": {
-    "gulp-crisper": "^1.1.0",
-    "gulp-vulcanize": "^6.1.0"
   }
 }

@@ -19,7 +19,6 @@
  * @since 1.0
  */
 
-
 const utils = require('utils.js');
 
 let exports = module.exports = {};
@@ -38,10 +37,6 @@ const TIMEOUT = 20;
 let keyWords;
 
 class Keyword {
-  // Keyword
-  keyword;
-  // Timeout in seconds
-  timeout;
 
   constructor(keyword, timeout) {
     this.keyword = keyword;
@@ -61,9 +56,6 @@ class Keyword {
 }
 
 class SocialKillerException {
-  message;
-  name;
-
   constructor(message) {
     this.message = message;
     this.name = 'SocialKillerException';

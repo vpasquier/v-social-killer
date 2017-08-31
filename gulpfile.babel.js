@@ -6,6 +6,7 @@ const es = require('event-stream');
 const path = require('path');
 const util = require('gulp-util');
 const moment = require('moment');
+const babel = require('gulp-babel');
 
 const $ = gulpLoadPlugins();
 
@@ -156,8 +157,8 @@ gulp.task('release:firefox', ['build:firefox'], (cb) => {
 
 gulp.task('babel', () => {
   return gulp.src('app/scripts.babel/**/*.js')
-      .pipe($.babel({
-        presets: ['es2017']
+      .pipe(babel({
+        presets: ['es2016']
       }))
       .pipe(gulp.dest('app/scripts'));
 });
