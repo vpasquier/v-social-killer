@@ -19,10 +19,6 @@
  * @since 1.0
  */
 
-const utils = require('utils.js');
-
-let exports = module.exports = {};
-
 // Default values
 const FACEBOOK = 'facebook';
 const TWITTER = 'twitter';
@@ -62,34 +58,34 @@ class SocialKillerException {
   }
 }
 
-exports.start = function () {
-  chrome.storage.local.clear(function () {
+const start = () => {
+  chrome.storage.local.clear(() => {
     let error = chrome.runtime.lastError;
     if (error) {
       console.error(error);
     }
-  });
-  // Init of default values
-  let facebook = new Keyword(FACEBOOK, TIMEOUT), twitter = new Keyword(TWITTER, TIMEOUT),
-    instagram = new Keyword(INSTAGRAM, TIMEOUT);
-  keyWords = new Map();
-  keyWords.set(FACEBOOK, facebook);
-  keyWords.set(TWITTER, twitter);
-  keyWords.set(INSTAGRAM, instagram);
-  chrome.storage.local.set({'social_killer_keywords': keyWords}, function () {
-    let error = chrome.runtime.lastError;
-    if (error) {
-      throw new SocialKillerException('Cannot store any data within your browser:' + error);
-    }
-    utils.notification('notif1', 'Social Kill Started', 'Facebook, Twitter and Instagram will be killed after 20 seconds.');
+    // Init of default values
+    let facebook = new Keyword(FACEBOOK, TIMEOUT), twitter = new Keyword(TWITTER, TIMEOUT),
+      instagram = new Keyword(INSTAGRAM, TIMEOUT);
+    keyWords = new Map();
+    keyWords.set(FACEBOOK, facebook);
+    keyWords.set(TWITTER, twitter);
+    keyWords.set(INSTAGRAM, instagram);
+    chrome.storage.local.set({'social_killer_keywords': keyWords}, () => {
+      let error = chrome.runtime.lastError;
+      if (error) {
+        throw new SocialKillerException('Cannot store any data within your browser:' + error);
+      }
+      notification('notif1', 'Social Kill Started', 'Facebook, Twitter and Instagram will be killed after 20 seconds.');
+    });
   });
 }
 
-chrome.tabs.onUpdated.addListener(function (tabid, info, tab) {
-  if (keyWords.length !== 0) {
+chrome.tabs.onUpdated.addListener((tabid, info, tab) => {
+  if (keyWords && keyWords.size !== 0) {
     killTab(keyWords, tab, info);
   } else {
-    chrome.storage.local.get('social_killer_keywords', function (entry) {
+    chrome.storage.local.get('social_killer_keywords', (entry) => {
       let error = chrome.runtime.lastError;
       if (error) {
         throw new SocialKillerException('Cannot get any data within your browser:' + error);
@@ -104,16 +100,18 @@ chrome.tabs.onUpdated.addListener(function (tabid, info, tab) {
   }
 });
 
-exports.killTab = function (keywords, tab, info) {
+const killTab = (keywords, tab, info) => {
   let keyword;
-  keywords.forEach(function (element) {
-    if (tab.url.indexOf(element.getKeyword()) !== -1)
-      keyword = element.getKeyword();
+  keywords.forEach((element) => {
+    let k = element.getKeyword();
+    if (tab.url.indexOf(k) !== -1) {
+      keyword = k;
+    }
   });
   if (keyword && info.status === COMPLETE) {
     // TODO check if in the same tab there is not another URL triggered before the timeout -> skip the killing
-    setTimeout(function () {
-      chrome.tabs.remove(tab.id, function () {
+    setTimeout(() => {
+      chrome.tabs.remove(tab.id, () => {
       });
     }, keywords.get(keyword).getTimeout());
   }
@@ -122,13 +120,40 @@ exports.killTab = function (keywords, tab, info) {
 /* Chrome Extension Preset */
 
 chrome.runtime.onMessage.addListener(
-  function (request) {
-    utils.notification(request.idP, request.titleP, request.messageP, request.img);
+  (request) => {
+    notification(request.idP, request.titleP, request.messageP);
   }
 );
 
 const target = '<all_urls>';
-chrome.webRequest.onCompleted.addListener(utils.onChange, {urls: [target]});
+chrome.webRequest.onCompleted.addListener(() => {
+  chrome.tabs.query({lastFocusedWindow: true, active: true}, getInfoForTab);
+}, {urls: [target]});
 chrome.tabs.onActivated.addListener(function (activeInfo) {
-  chrome.tabs.get(activeInfo.tabId, utils.pageActionOnSK);
+  chrome.tabs.get(activeInfo.tabId, pageActionOnSK);
 });
+
+/* UTILS */
+
+const pageActionOnSK = (tabInfo) => {
+  chrome.pageAction.show(tabInfo.id);
+}
+
+const getInfoForTab = (tabs) => {
+  if (tabs.length > 0) {
+    chrome.tabs.get(tabs[0].id, pageActionOnSK);
+  }
+}
+
+const notification = (idP, titleP, messageP) => {
+  chrome.notifications.create(idP, {
+    type: 'basic',
+    title: titleP,
+    message: messageP,
+    iconUrl: '../../images/v-128.png'
+  }, () => {
+    if (chrome.runtime.lastError) {
+      console.error(chrome.runtime.lastError);
+    }
+  });
+}

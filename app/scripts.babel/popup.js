@@ -21,22 +21,17 @@
 
 'use strict';
 
-let background = require('background.js');
-
-let exports = module.exports = {};
-
-window.onload = function () {
+window.onload = () => {
   document.getElementById('restart').addEventListener('click', restart);
-  //TODO maybe its here to put the start of the extension
 };
 
-exports.restart = function() {
+const restart = () => {
   let keywordsContainer = document.getElementById('keywords');
   keywordsContainer.innerHTML = '';
-  background.start();
+  chrome.extension.getBackgroundPage().start();
 }
 
-fillTemplate = function(keywords) {
+const fillTemplate = (keywords) => {
   let keywordItems = [];
   for (let i = 0; i < keywords.length; i++) {
     let email = keywords[i].email;
@@ -58,7 +53,7 @@ fillTemplate = function(keywords) {
   }
 }
 
-notification = function(idP, titleP, messageP) {
+const notification = (idP, titleP, messageP) => {
   chrome.runtime.sendMessage({
     'idP': idP,
     'titleP': titleP,

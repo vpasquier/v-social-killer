@@ -158,7 +158,7 @@ gulp.task('release:firefox', ['build:firefox'], (cb) => {
 gulp.task('babel', () => {
   return gulp.src('app/scripts.babel/**/*.js')
       .pipe(babel({
-        presets: ['es2016']
+        presets: ['es2015']
       }))
       .pipe(gulp.dest('app/scripts'));
 });
@@ -167,7 +167,7 @@ gulp.task('clean', () => {
   return del.sync(['.tmp', 'dist', 'package']);
 });
 
-gulp.task('watch', ['lint', 'babel', 'html', 'chrome', 'firefox', 'extras'], () => {
+gulp.task('watch', ['lint', 'babel', 'html', 'build:chrome', 'extras'], () => {
   $.livereload.listen();
 
 	gulp.src('app/vendor/chrome/manifest.json')
@@ -177,14 +177,6 @@ gulp.task('watch', ['lint', 'babel', 'html', 'chrome', 'firefox', 'extras'], () 
 			}
 		}))
 	.pipe(gulp.dest(dist('chrome')));
-
-	gulp.src('app/vendor/firefox/manifest.json')
-		.pipe($.chromeManifest({
-			background: {
-				target: 'app/scripts/background.js'
-			}
-		}))
-	.pipe(gulp.dest(dist('firefox')));
 
   gulp.watch([
     'app/*.html',
