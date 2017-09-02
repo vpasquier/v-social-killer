@@ -27,6 +27,8 @@ const INSTAGRAM = 'instagram';
 // Default timeout to 15 sec
 const TIMEOUT = 15;
 
+let keyWords;
+
 const initKeywords = () => {
   let facebook = new Keyword(FACEBOOK, TIMEOUT), twitter = new Keyword(TWITTER, TIMEOUT),
     instagram = new Keyword(INSTAGRAM, TIMEOUT);

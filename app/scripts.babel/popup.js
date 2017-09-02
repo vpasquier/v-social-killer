@@ -35,10 +35,10 @@ const start = () => {
     if (error) {
       throw new SocialKillerException('Cannot get any data within your browser:' + error);
     }
-    keyWords = entry['social_killer_keywords'];
-    if (Object.keys(keyWords).length === 0) {
-      globalRestart();
-      notification('notif1', 'Social Kill Started', 'Facebook, Twitter and Instagram will be killed after 15 seconds.');
+    chrome.extension.getBackgroundPage().keyWords = entry['social_killer_keywords'];
+    if (Object.keys(chrome.extension.getBackgroundPage().keyWords).length === 0) {
+      chrome.extension.getBackgroundPage().globalRestart();
+      chrome.extension.getBackgroundPage().notification('notif1', 'Social Kill Started', 'Facebook, Twitter and Instagram will be killed after 15 seconds.');
     }
   });
 }
@@ -46,21 +46,20 @@ const start = () => {
 const restart = () => {
   let keywordsContainer = document.getElementById('keywords');
   keywordsContainer.innerHTML = '';
-  globalRestart();
+  chrome.extension.getBackgroundPage().globalRestart();
 }
 
 const save = () => {
   let keywordsContainer = document.getElementById('keywords');
   keywordsContainer.innerHTML;
-  let keyWords = new Map();
+  chrome.extension.getBackgroundPage().keyWords = new Map();
   // TODO tous les put depuis le template container sans validation
-  chrome.storage.local.set({'social_killer_keywords': keyWords}, () => {
+  chrome.storage.local.set({'social_killer_keywords': chrome.extension.getBackgroundPage().keyWords}, () => {
     let error = chrome.runtime.lastError;
     if (error) {
       throw new SocialKillerException('Cannot store any data within your browser:' + error);
     }
-    chrome.extension.getBackgroundPage().keyWords = keyWords;
-    notification('notif1', 'Social Kill', 'Configuration Saved.');
+    chrome.extension.getBackgroundPage().notification('notif1', 'Social Kill', 'Configuration Saved.');
   });
 }
 
@@ -85,13 +84,3 @@ const fillTemplate = (keywords) => {
     keywordsContainer.insertAdjacentHTML('afterBegin', '<div class=pure-u-1-1><h3>Click on Restart</h3></div>');
   }
 }
-
-const notification = (idP, titleP, messageP) => {
-  chrome.runtime.sendMessage({
-    'idP': idP,
-    'titleP': titleP,
-    'messageP': messageP,
-    'img': '../images/v-128.png'
-  }, function () {
-  });
-};

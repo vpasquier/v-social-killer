@@ -21,7 +21,6 @@
 // Tab states
 const COMPLETE = 'complete';
 
-let keyWords;
 let tabStatuses;
 
 class TabStatus {
