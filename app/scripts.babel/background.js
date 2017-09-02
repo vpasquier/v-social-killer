@@ -28,9 +28,30 @@ const INSTAGRAM = 'instagram';
 const COMPLETE = 'complete';
 
 // Default timeout to 20 sec
-const TIMEOUT = 20;
+const TIMEOUT = 7;
 
 let keyWords;
+let tabStatuses;
+
+class TabStatus {
+
+  constructor(tabId) {
+    this.tabId = tabId;
+    this.activated = true;
+  }
+
+  isActivated() {
+    return this.activated;
+  }
+
+  activate() {
+    this.activated = true;
+  }
+
+  sleep() {
+    this.activated = false;
+  }
+}
 
 class Keyword {
 
@@ -58,6 +79,15 @@ class SocialKillerException {
   }
 }
 
+const initKeywords = () => {
+  let facebook = new Keyword(FACEBOOK, TIMEOUT), twitter = new Keyword(TWITTER, TIMEOUT),
+    instagram = new Keyword(INSTAGRAM, TIMEOUT);
+  keyWords = new Map();
+  keyWords.set(FACEBOOK, facebook);
+  keyWords.set(TWITTER, twitter);
+  keyWords.set(INSTAGRAM, instagram);
+}
+
 const start = () => {
   chrome.storage.local.clear(() => {
     let error = chrome.runtime.lastError;
@@ -65,12 +95,7 @@ const start = () => {
       console.error(error);
     }
     // Init of default values
-    let facebook = new Keyword(FACEBOOK, TIMEOUT), twitter = new Keyword(TWITTER, TIMEOUT),
-      instagram = new Keyword(INSTAGRAM, TIMEOUT);
-    keyWords = new Map();
-    keyWords.set(FACEBOOK, facebook);
-    keyWords.set(TWITTER, twitter);
-    keyWords.set(INSTAGRAM, instagram);
+    initKeywords();
     chrome.storage.local.set({'social_killer_keywords': keyWords}, () => {
       let error = chrome.runtime.lastError;
       if (error) {
@@ -100,7 +125,7 @@ chrome.tabs.onUpdated.addListener((tabid, info, tab) => {
   }
 });
 
-const killTab = (keywords, tab, info) => {
+const checkURL = (keywords, tab) => {
   let keyword;
   keywords.forEach((element) => {
     let k = element.getKeyword();
@@ -108,12 +133,42 @@ const killTab = (keywords, tab, info) => {
       keyword = k;
     }
   });
+  return keyword;
+}
+
+const killTab = (keywords, tab, info) => {
+  // Keywords detection
+  let keyword = checkURL(keywords, tab);
+
+  // Tabs status management
+  if (!tabStatuses) {
+    tabStatuses = new Map();
+  }
+  let tabStatus = tabStatuses.get(tab.id);
+
+  // Check extension activation
   if (keyword && info.status === COMPLETE) {
-    // TODO check if in the same tab there is not another URL triggered before the timeout -> skip the killing
+    if (!tabStatus) {
+      tabStatus = new TabStatus(tab.id);
+    } else {
+      tabStatus.activate();
+    }
+    tabStatuses.set(tab.id, tabStatus);
     setTimeout(() => {
-      chrome.tabs.remove(tab.id, () => {
-      });
+      // Check if the tab is loading another page
+      if (tabStatuses.get(tab.id) && tabStatuses.get(tab.id).isActivated()) {
+        chrome.tabs.remove(tab.id, () => {
+          tabStatuses.delete(tab.id);
+        });
+      }
     }, keywords.get(keyword).getTimeout());
+  }
+  if (!keyword) {
+    if (tabStatus) {
+      // Put back extension to sleep
+      tabStatus.sleep();
+      tabStatuses.set(tab.id, tabStatus);
+    }
   }
 }
 
@@ -157,3 +212,5 @@ const notification = (idP, titleP, messageP) => {
     }
   });
 }
+
+start();
