@@ -23,12 +23,30 @@
 
 window.onload = () => {
   document.getElementById('restart').addEventListener('click', restart);
+  document.getElementById('save').addEventListener('click', save);
+  // TODO display a message instead of the button
+  // TODO fill templates with map values in input text + button save close to restart
 };
 
 const restart = () => {
   let keywordsContainer = document.getElementById('keywords');
   keywordsContainer.innerHTML = '';
   chrome.extension.getBackgroundPage().start();
+}
+
+const save = () => {
+  let keywordsContainer = document.getElementById('keywords');
+  keywordsContainer.innerHTML;
+  let keyWords = new Map();
+  // TODO tous les put depuis le template container sans validation
+  chrome.storage.local.set({'social_killer_keywords': keyWords}, () => {
+    let error = chrome.runtime.lastError;
+    if (error) {
+      throw new SocialKillerException('Cannot store any data within your browser:' + error);
+    }
+    chrome.extension.getBackgroundPage().keyWords = keyWords;
+    notification('notif1', 'Social Kill', 'Configuration Saved.');
+  });
 }
 
 const fillTemplate = (keywords) => {
