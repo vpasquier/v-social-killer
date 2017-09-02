@@ -10,11 +10,19 @@
   "content_security_policy": "script-src https://*.google.com 'unsafe-eval'; object-src 'self'",
   "background": {
     "scripts": [
+      "../../scripts/global.js",
       "../../scripts/background.js"
     ],
     "persistent": true
   },
-  "permissions": ["tabs", "<all_urls>", "storage", "notifications", "webRequest","webRequestBlocking"],
+  "permissions": [
+    "tabs",
+    "<all_urls>",
+    "storage",
+    "notifications",
+    "webRequest",
+    "webRequestBlocking"
+  ],
   "page_action": {
     "default_icon": {
       "19": "images/v-19.png",

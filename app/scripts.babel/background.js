@@ -18,17 +18,8 @@
  * Background script.
  * @since 1.0
  */
-
-// Default values
-const FACEBOOK = 'facebook';
-const TWITTER = 'twitter';
-const INSTAGRAM = 'instagram';
-
 // Tab states
 const COMPLETE = 'complete';
-
-// Default timeout to 20 sec
-const TIMEOUT = 15;
 
 let keyWords;
 let tabStatuses;
@@ -79,33 +70,6 @@ class SocialKillerException {
   }
 }
 
-const initKeywords = () => {
-  let facebook = new Keyword(FACEBOOK, TIMEOUT), twitter = new Keyword(TWITTER, TIMEOUT),
-    instagram = new Keyword(INSTAGRAM, TIMEOUT);
-  keyWords = new Map();
-  keyWords.set(FACEBOOK, facebook);
-  keyWords.set(TWITTER, twitter);
-  keyWords.set(INSTAGRAM, instagram);
-}
-
-const start = () => {
-  chrome.storage.local.clear(() => {
-    let error = chrome.runtime.lastError;
-    if (error) {
-      console.error(error);
-    }
-    // Init of default values
-    initKeywords();
-    chrome.storage.local.set({'social_killer_keywords': keyWords}, () => {
-      let error = chrome.runtime.lastError;
-      if (error) {
-        throw new SocialKillerException('Cannot store any data within your browser:' + error);
-      }
-      notification('notif1', 'Social Kill Started', 'Facebook, Twitter and Instagram will be killed after 20 seconds.');
-    });
-  });
-}
-
 chrome.tabs.onUpdated.addListener((tabid, info, tab) => {
   if (keyWords && keyWords.size !== 0) {
     killTab(keyWords, tab, info);
@@ -116,9 +80,9 @@ chrome.tabs.onUpdated.addListener((tabid, info, tab) => {
         throw new SocialKillerException('Cannot get any data within your browser:' + error);
       }
       keyWords = entry['social_killer_keywords'];
-      if (!keyWords) {
+      if (Object.keys(keyWords).length === 0) {
         console.warn('No entries have been found - restarting the extension with default values');
-        start();
+        globalRestart();
       }
       killTab(keyWords, tab, info);
     });
@@ -212,5 +176,3 @@ const notification = (idP, titleP, messageP) => {
     }
   });
 }
-
-start();

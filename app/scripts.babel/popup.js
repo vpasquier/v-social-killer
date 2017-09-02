@@ -24,14 +24,29 @@
 window.onload = () => {
   document.getElementById('restart').addEventListener('click', restart);
   document.getElementById('save').addEventListener('click', save);
+  start();
   // TODO display a message instead of the button
   // TODO fill templates with map values in input text + button save close to restart
 };
 
+const start = () => {
+  chrome.storage.local.get('social_killer_keywords', (entry) => {
+    let error = chrome.runtime.lastError;
+    if (error) {
+      throw new SocialKillerException('Cannot get any data within your browser:' + error);
+    }
+    keyWords = entry['social_killer_keywords'];
+    if (Object.keys(keyWords).length === 0) {
+      globalRestart();
+      notification('notif1', 'Social Kill Started', 'Facebook, Twitter and Instagram will be killed after 15 seconds.');
+    }
+  });
+}
+
 const restart = () => {
   let keywordsContainer = document.getElementById('keywords');
   keywordsContainer.innerHTML = '';
-  chrome.extension.getBackgroundPage().start();
+  globalRestart();
 }
 
 const save = () => {
