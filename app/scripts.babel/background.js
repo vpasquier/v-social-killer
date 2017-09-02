@@ -28,7 +28,7 @@ const INSTAGRAM = 'instagram';
 const COMPLETE = 'complete';
 
 // Default timeout to 20 sec
-const TIMEOUT = 7;
+const TIMEOUT = 15;
 
 let keyWords;
 let tabStatuses;
