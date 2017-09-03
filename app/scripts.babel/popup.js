@@ -22,12 +22,14 @@
 'use strict';
 
 window.onload = () => {
-  document.getElementById('restart').addEventListener('click', restart);
-  document.getElementById('save').addEventListener('click', save);
+  document.getElementById('reinit').addEventListener('click', restart);
+  document.getElementById('option').addEventListener('click', option);
   start();
-  // TODO display a message instead of the button
-  // TODO fill templates with map values in input text + button save close to restart
 };
+
+const option = () => {
+  chrome.tabs.create({'url': 'chrome://extensions/?options=' + chrome.runtime.id});
+}
 
 const start = () => {
   chrome.storage.local.get('social_killer_keywords', (entry) => {
@@ -47,40 +49,4 @@ const restart = () => {
   let keywordsContainer = document.getElementById('keywords');
   keywordsContainer.innerHTML = '';
   chrome.extension.getBackgroundPage().globalRestart();
-}
-
-const save = () => {
-  let keywordsContainer = document.getElementById('keywords');
-  keywordsContainer.innerHTML;
-  chrome.extension.getBackgroundPage().keyWords = new Map();
-  // TODO tous les put depuis le template container sans validation
-  chrome.storage.local.set({'social_killer_keywords': chrome.extension.getBackgroundPage().keyWords}, () => {
-    let error = chrome.runtime.lastError;
-    if (error) {
-      throw new SocialKillerException('Cannot store any data within your browser:' + error);
-    }
-    chrome.extension.getBackgroundPage().notification('notif1', 'Social Kill', 'Configuration Saved.');
-  });
-}
-
-const fillTemplate = (keywords) => {
-  let keywordItems = [];
-  for (let i = 0; i < keywords.length; i++) {
-    let email = keywords[i].email;
-    let url = keywords[i].url;
-    let accountItem = '<div class=pure-u-1-1><h3><a class=pure-button href=' + url + ' target=_blank rel=noreferrer>';
-    accountItem = accountItem + email + '</a></h3></div>';
-    keywordItems.push(accountItem);
-  }
-  if (keywordItems.length !== 0) {
-    keywordItems.push('<div class=pure-u-1-1><h3><a id=openAll class=pure-button href=#>Open All</a></h3></div>');
-  }
-  let keywordsContainer = document.getElementById('keywords');
-  if (keywordItems.length !== 0) {
-    keywordsContainer.insertAdjacentHTML('afterBegin', keywordItems.toString().replace(',', ''));
-    document.getElementById('openAll').addEventListener('click', openTabs);
-  }
-  if (keywordItems.length === 0) {
-    keywordsContainer.insertAdjacentHTML('afterBegin', '<div class=pure-u-1-1><h3>Click on Restart</h3></div>');
-  }
 }
