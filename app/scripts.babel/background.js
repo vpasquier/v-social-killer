@@ -60,6 +60,10 @@ class Keyword {
   getKeyword() {
     return this.keyword;
   }
+
+  setTimeout(timeout) {
+    this.timeout = timeout;
+  }
 }
 
 class SocialKillerException {
@@ -79,7 +83,9 @@ chrome.tabs.onUpdated.addListener((tabid, info, tab) => {
         throw new SocialKillerException('Cannot get any data within your browser:' + error);
       }
       keyWords = entry['social_killer_keywords'];
-      if (Object.keys(keyWords).length === 0) {
+      if (!keyWords) {
+        return;
+      } else if (Object.keys(keyWords).length === 0) {
         console.warn('No entries have been found - restarting the extension with default values');
         globalRestart();
       }

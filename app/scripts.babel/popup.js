@@ -24,29 +24,35 @@
 window.onload = () => {
   document.getElementById('reinit').addEventListener('click', restart);
   document.getElementById('option').addEventListener('click', option);
-  start();
+  document.getElementById('deactivate').addEventListener('click', deactivate);
+  let status;
+  if (chrome.extension.getBackgroundPage().keyWords) {
+    status = 'Extension activated';
+  } else {
+    status = 'Extension deactivated';
+  }
+  document.getElementById('status').textContent = status;
 };
 
 const option = () => {
   chrome.tabs.create({'url': 'chrome://extensions/?options=' + chrome.runtime.id});
 }
 
-const start = () => {
-  chrome.storage.local.get('social_killer_keywords', (entry) => {
+const deactivate = () => {
+  chrome.extension.getBackgroundPage().keyWords = undefined;
+  chrome.storage.local.clear(() => {
     let error = chrome.runtime.lastError;
     if (error) {
-      throw new SocialKillerException('Cannot get any data within your browser:' + error);
+      console.error(error);
     }
-    chrome.extension.getBackgroundPage().keyWords = entry['social_killer_keywords'];
-    if (Object.keys(chrome.extension.getBackgroundPage().keyWords).length === 0) {
-      chrome.extension.getBackgroundPage().globalRestart();
-      chrome.extension.getBackgroundPage().notification('notif1', 'Social Kill Started', 'Facebook, Twitter and Instagram will be killed after 15 seconds.');
-    }
+    chrome.extension.getBackgroundPage().notification('notif2', 'Social Kill Started', 'Extension deactivated.');
+    window.close();
   });
 }
 
 const restart = () => {
-  let keywordsContainer = document.getElementById('keywords');
-  keywordsContainer.innerHTML = '';
   chrome.extension.getBackgroundPage().globalRestart();
+  chrome.extension.getBackgroundPage().notification('notif1', 'Social Kill Started', 'Facebook, Twitter and Instagram will be killed after 20 seconds.');
+  window.close();
 }
+

@@ -19,13 +19,11 @@
  * @since 1.0
  */
 
-// Default values
 const FACEBOOK = 'facebook';
 const TWITTER = 'twitter';
 const INSTAGRAM = 'instagram';
 
-// Default timeout to 15 sec
-const TIMEOUT = 15;
+const TIMEOUT = 5;
 
 let keyWords;
 
