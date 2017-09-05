@@ -8,17 +8,16 @@
 - Instagram
 - Twitter
 
-This chrome plugin let you:
+This chrome plugin let you to:
 
 - Deactivate/Activate the feature
-- Add new websites to monitor
 - Update the timeout in sec
 
 ## Getting Started with Social Killer - WIP
 
-WIP : From the Chrome Web Store: install [Social Killer]().
+From the Chrome Web Store: install [Social Killer](https://chrome.google.com/webstore/detail/social-killer/npgmmokajbfinfnefnnbpnahdjiidian).
 
-WIP: Here is the description [article]()
+WIP: Here is the description [article](https://medium.com/@vladimir.pasquier/social-online-regulator-816df17e23ec)
 
 ## Build
 
