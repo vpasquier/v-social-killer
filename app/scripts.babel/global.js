@@ -23,7 +23,7 @@ const FACEBOOK = 'facebook';
 const TWITTER = 'twitter';
 const INSTAGRAM = 'instagram';
 
-const TIMEOUT = 5;
+const TIMEOUT = 20;
 
 let keyWords;
 
